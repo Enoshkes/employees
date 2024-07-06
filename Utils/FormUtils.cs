@@ -19,17 +19,5 @@ namespace Employees.Utils
             }
             return isValid;
         }
-
-        public static FamilyStatus MapFamilyStatusByText(string text)
-        {
-            return text switch
-            {
-                "רווק" => FamilyStatus.Single,
-                "נשוי" => FamilyStatus.Married,
-                "גרוש" => FamilyStatus.Divorced,
-                "אלמן" => FamilyStatus.Widowed,
-                _ => FamilyStatus.Unkown,
-            };
-        }
     }
 }

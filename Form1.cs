@@ -24,46 +24,49 @@ namespace Employees
         private void BindCurrentEmployee()
         {
             var employeesList = _employeeService.GetAll();
-            if (employeesList.Count > 0) 
+            if (employeesList.Count > 0)
             {
                 var current = employeesList[_activeIndex];
-                if (current != null) 
+                if (current != null)
                 {
-                    txtCode.Text = $"{current.Id}";
-                    txtId.Text = current.IdentityNumber;
-                    txtFirstName.Text = current.FirstName;
-                    txtLastName.Text = current.LastName;
-                    txtAge.Text = $"{current.Age}";
-                    txtCellphone.Text = current.CellphoneNumber;
-                    txtTelephone.Text = current.PhoneNumber ?? "";
-                    txtStreet.Text = current.Address.StreetName;
-                    txtCity.Text = current.Address.City;
-                    txtStreetNumber.Text = $"{current.Address.StreetNumber}";
-                    dtpDateOfBirth.Text = current.DateOfBirth.ToShortDateString();
-                    switch (current.Gender) 
-                    {
-                        case Gender.Male:
-                            rdbMale.Checked = true; break;
-                        case Gender.Female:
-                            rdbFemale.Checked = true; break;
-                    }
-                    switch (current.FamilyStatus)
-                    {
-                        case FamilyStatus.Single:
-                            rdbSingle.Checked = true; break;
-                        case FamilyStatus.Married:
-                            rdbMarride.Checked = true; break;
-                        case FamilyStatus.Widowed:
-                            rdbWidowed.Checked = true; break;
-                        case FamilyStatus.Divorced:
-                            rdbDivorce.Checked = true; break;
-                    }
+                    BindEmployeeToForm(current);
+                    return;
                 }
             }
-            else
+            _formState = FormState.New;
+            ClearForm();
+        }
+
+        private void BindEmployeeToForm(Employee employee)
+        {
+            txtCode.Text = employee.Id.ToString();
+            txtId.Text = employee.IdentityNumber;
+            txtFirstName.Text = employee.FirstName;
+            txtLastName.Text = employee.LastName;
+            txtAge.Text = employee.Age.ToString();
+            txtCellphone.Text = employee.CellphoneNumber;
+            txtTelephone.Text = employee.PhoneNumber ?? string.Empty;
+            txtStreet.Text = employee.Address.StreetName;
+            txtCity.Text = employee.Address.City;
+            txtStreetNumber.Text = employee.Address.StreetNumber.ToString();
+            dtpDateOfBirth.Text = employee.DateOfBirth.ToShortDateString();
+            rdbMale.Checked = employee.Gender == Gender.Male;
+            rdbFemale.Checked = employee.Gender == Gender.Female;
+
+            switch (employee.FamilyStatus)
             {
-                _formState = FormState.New;
-                ClearForm();
+                case FamilyStatus.Single:
+                    rdbSingle.Checked = true;
+                    break;
+                case FamilyStatus.Married:
+                    rdbMarried.Checked = true;
+                    break;
+                case FamilyStatus.Widowed:
+                    rdbWidowed.Checked = true;
+                    break;
+                case FamilyStatus.Divorced:
+                    rdbDivorced.Checked = true;
+                    break;
             }
         }
 
@@ -98,16 +101,16 @@ namespace Employees
 
         private void ClearForm()
         {
-            List<TextBox> formTextBoxes = [
-                txtCode, txtId, txtFirstName, txtLastName,
-                txtAge, txtCellphone, txtTelephone,
-                txtStreet, txtCity, txtStreetNumber,
-            ];
-
-            foreach (TextBox formTextBox in formTextBoxes)
+            foreach (var textBox in new[] { 
+                txtCode, txtId, txtFirstName, txtLastName, txtAge, 
+                txtCellphone, txtTelephone, txtStreet, txtCity, txtStreetNumber 
+            })
             {
-                formTextBox.Text = string.Empty;
+                textBox.Text = string.Empty;
             }
+            dtpDateOfBirth.Value = DateTime.Now;
+            rdbMale.Checked = true;
+            rdbSingle.Checked = true;
             dtpDateOfBirth.Text = DateTime.Now.ToShortTimeString();
             rdbMale.Checked = true;
             rdbSingle.Checked = true;
@@ -117,6 +120,17 @@ namespace Employees
         {
             _formState = FormState.New;
             ClearForm();
+        }
+
+        private FamilyStatus GetFamilyStatus ()
+        {
+            return rdbSingle.Checked switch
+            {
+                true => FamilyStatus.Single,
+                _ when rdbMarried.Checked => FamilyStatus.Married,
+                _ when rdbDivorced.Checked => FamilyStatus.Divorced,
+                _ => FamilyStatus.Widowed,
+            };
         }
 
         private Employee? GenerateEmployeeViaTextBoxes()
@@ -131,22 +145,9 @@ namespace Employees
                 return null;
             }
 
-            var success = DateOnly.TryParse(dtpDateOfBirth.Text, out DateOnly dob);
-            if (!success)
+            if (!DateOnly.TryParse(dtpDateOfBirth.Text, out var dob))
             {
                 return null;
-            }
-
-            string familyStatusText = string.Empty;
-
-            List<RadioButton> radioButtons = [rdbSingle, rdbMarride, rdbDivorce, rdbWidowed];
-            
-            foreach (RadioButton status in radioButtons)
-            {
-                if (status.Checked)
-                {
-                    familyStatusText = status.Text;
-                }
             }
 
             return new Employee(
@@ -157,7 +158,7 @@ namespace Employees
                 txtTelephone.Text,
                 txtCellphone.Text,
                 rdbMale.Checked ? Gender.Male : Gender.Female,
-                FormUtils.MapFamilyStatusByText(familyStatusText),
+                GetFamilyStatus(),
                 dob,
                 new Address(txtCity.Text, txtStreet.Text, int.Parse(txtStreetNumber.Text))
             );
@@ -184,7 +185,7 @@ namespace Employees
             _activeIndex = employeesList.Count - 1;
             BindCurrentEmployee();
             EnableNavigatinoButtons();
-            _employeeService.WriteToJsonFile();
+            _employeeService.SaveChanges();
             _formState = FormState.Read;
         }
 
@@ -197,14 +198,14 @@ namespace Employees
                 return;
             }
             _employeeService.Update(updatedEmployee);
-            _employeeService.WriteToJsonFile();
+            _employeeService.SaveChanges();
         }
 
         void DeleteEmployee(object sender, EventArgs e)
         {
             _employeeService.Delete(int.Parse(txtCode.Text));
-            _activeIndex = _activeIndex == 0 ? 0 : _activeIndex - 1;
-            _employeeService.WriteToJsonFile();
+            _activeIndex = Math.Max(0, _activeIndex - 1);
+            _employeeService.SaveChanges();
             BindCurrentEmployee();
             EnableNavigatinoButtons();
         }

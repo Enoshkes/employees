@@ -31,8 +31,8 @@
             btSearchWorkerByCode = new Button();
             familyStatusGroup = new Panel();
             rdbWidowed = new RadioButton();
-            rdbDivorce = new RadioButton();
-            rdbMarride = new RadioButton();
+            rdbDivorced = new RadioButton();
+            rdbMarried = new RadioButton();
             rdbSingle = new RadioButton();
             genderGroup = new Panel();
             rdbFemale = new RadioButton();
@@ -85,8 +85,8 @@
             familyStatusGroup.BackColor = Color.White;
             familyStatusGroup.BorderStyle = BorderStyle.Fixed3D;
             familyStatusGroup.Controls.Add(rdbWidowed);
-            familyStatusGroup.Controls.Add(rdbDivorce);
-            familyStatusGroup.Controls.Add(rdbMarride);
+            familyStatusGroup.Controls.Add(rdbDivorced);
+            familyStatusGroup.Controls.Add(rdbMarried);
             familyStatusGroup.Controls.Add(rdbSingle);
             familyStatusGroup.Location = new Point(560, 249);
             familyStatusGroup.Name = "familyStatusGroup";
@@ -107,27 +107,27 @@
             // 
             // rdbDivorce
             // 
-            rdbDivorce.AutoSize = true;
-            rdbDivorce.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 177);
-            rdbDivorce.Location = new Point(24, 83);
-            rdbDivorce.Name = "rdbDivorce";
-            rdbDivorce.Size = new Size(67, 26);
-            rdbDivorce.TabIndex = 0;
-            rdbDivorce.TabStop = true;
-            rdbDivorce.Text = "גרוש";
-            rdbDivorce.UseVisualStyleBackColor = true;
+            rdbDivorced.AutoSize = true;
+            rdbDivorced.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 177);
+            rdbDivorced.Location = new Point(24, 83);
+            rdbDivorced.Name = "rdbDivorce";
+            rdbDivorced.Size = new Size(67, 26);
+            rdbDivorced.TabIndex = 0;
+            rdbDivorced.TabStop = true;
+            rdbDivorced.Text = "גרוש";
+            rdbDivorced.UseVisualStyleBackColor = true;
             // 
             // rdbMarride
             // 
-            rdbMarride.AutoSize = true;
-            rdbMarride.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 177);
-            rdbMarride.Location = new Point(28, 51);
-            rdbMarride.Name = "rdbMarride";
-            rdbMarride.Size = new Size(63, 26);
-            rdbMarride.TabIndex = 0;
-            rdbMarride.TabStop = true;
-            rdbMarride.Text = "נשוי";
-            rdbMarride.UseVisualStyleBackColor = true;
+            rdbMarried.AutoSize = true;
+            rdbMarried.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 177);
+            rdbMarried.Location = new Point(28, 51);
+            rdbMarried.Name = "rdbMarride";
+            rdbMarried.Size = new Size(63, 26);
+            rdbMarried.TabIndex = 0;
+            rdbMarried.TabStop = true;
+            rdbMarried.Text = "נשוי";
+            rdbMarried.UseVisualStyleBackColor = true;
             // 
             // rdbSingle
             // 
@@ -506,8 +506,8 @@
         private System.Windows.Forms.Button btSearchWorkerByCode;
         private System.Windows.Forms.Panel familyStatusGroup;
         private System.Windows.Forms.RadioButton rdbWidowed;
-        private System.Windows.Forms.RadioButton rdbDivorce;
-        private System.Windows.Forms.RadioButton rdbMarride;
+        private System.Windows.Forms.RadioButton rdbDivorced;
+        private System.Windows.Forms.RadioButton rdbMarried;
         private System.Windows.Forms.RadioButton rdbSingle;
         private System.Windows.Forms.Panel genderGroup;
         private System.Windows.Forms.RadioButton rdbFemale;

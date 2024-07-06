@@ -22,12 +22,7 @@ namespace Employees.Service
 
         public EmployeeService(params Employee[] employees)
         {
-            _employees = [];
-
-            foreach (var employee in employees)
-            {
-                Add(employee);
-            }
+            _employees = new List<Employee>(employees);
         }
 
         public void Add(Employee employee)
@@ -85,7 +80,7 @@ namespace Employees.Service
             } 
         }
 
-        public void WriteToJsonFile()
+        private void WriteToJsonFile()
         {
             try
             {
@@ -98,7 +93,7 @@ namespace Employees.Service
             }
         }
 
-        public List<Employee> ReadFromJsonFile()
+        private List<Employee> ReadFromJsonFile()
         {
             List<Employee> employees = [];
             try
@@ -134,6 +129,11 @@ namespace Employees.Service
                 }
             }
             return max + 1;
+        }
+
+        public void SaveChanges()
+        {
+            WriteToJsonFile();
         }
     }
 }

@@ -19,13 +19,11 @@ namespace Employees.Service
 
         List<Employee> GetAll();
 
-        void WriteToJsonFile();
-
-        List<Employee> ReadFromJsonFile();
-
         void InitiateEmployees();
 
         int GenerateId();
+
+        public void SaveChanges();
 
     }
 }
