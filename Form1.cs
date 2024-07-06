@@ -16,7 +16,6 @@ namespace Employees
             _employeeService = new EmployeeService();
             _employeeService.InitiateEmployees();
             _employeesList = _employeeService.GetAll();
-            _employeeService.WriteToJsonFile();
             BindCurrentEmployee();
         }
 
