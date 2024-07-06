@@ -133,7 +133,7 @@ namespace Employees
             };
         }
 
-        private Employee? GenerateEmployeeViaTextBoxes()
+        private Employee? CreateEmployeeViaUI()
         {
             List<TextBox> formTextBoxes = [
                            txtId, txtFirstName, txtLastName,
@@ -173,7 +173,7 @@ namespace Employees
                 return;
             }
 
-            Employee? newEmployee = GenerateEmployeeViaTextBoxes();
+            Employee? newEmployee = CreateEmployeeViaUI();
             if (newEmployee == null)
             {
                 MessageBox.Show("This form is invalid. all fields must be filled out");
@@ -191,7 +191,7 @@ namespace Employees
 
         void UpdateEmployee(object sender, EventArgs e)
         {
-            Employee? updatedEmployee = GenerateEmployeeViaTextBoxes();
+            Employee? updatedEmployee = CreateEmployeeViaUI();
             if (updatedEmployee == null)
             {
                 MessageBox.Show("This form is invalid. all fields must be filled out");
