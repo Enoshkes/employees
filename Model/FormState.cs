@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Employees.Model
 {
-    internal enum FamilyStatus
+    internal enum FormState
     {
-        Single, Married, Divorced, Widowed, Unkown
+        Read, New
     }
 }

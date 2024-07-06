@@ -136,5 +136,18 @@ namespace Employees.Service
                 WriteToJsonFile();
             }
         }
+
+        public int GenerateId()
+        {
+           int max = 0;
+            foreach (Employee employee in _employees)
+            {
+                if(employee.Id > max)
+                {
+                    max = employee.Id;
+                }
+            }
+            return max + 1;
+        }
     }
 }

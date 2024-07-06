@@ -14,3 +14,4 @@ C:\Users\enosh.tsur\source\repos\Employees\Employees\obj\Debug\net8.0-windows\re
 C:\Users\enosh.tsur\source\repos\Employees\Employees\obj\Debug\net8.0-windows\Employees.pdb
 C:\Users\enosh.tsur\source\repos\Employees\Employees\obj\Debug\net8.0-windows\Employees.genruntimeconfig.cache
 C:\Users\enosh.tsur\source\repos\Employees\Employees\obj\Debug\net8.0-windows\ref\Employees.dll
+C:\Users\enosh.tsur\source\repos\Employees\Employees\obj\Debug\net8.0-windows\Employees.sourcelink.json

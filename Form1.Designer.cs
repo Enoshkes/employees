@@ -327,6 +327,7 @@
             btAddWorker.TabIndex = 69;
             btAddWorker.Text = "הוספת עובד";
             btAddWorker.UseVisualStyleBackColor = true;
+            btAddWorker.Click += SaveEmployee;
             // 
             // btNewWorker
             // 
@@ -336,6 +337,7 @@
             btNewWorker.TabIndex = 68;
             btNewWorker.Text = "חדש";
             btNewWorker.UseVisualStyleBackColor = true;
+            btNewWorker.Click += NewEmployee;
             // 
             // btForward
             // 
@@ -371,6 +373,7 @@
             txtStreetNumber.Name = "txtStreetNumber";
             txtStreetNumber.Size = new Size(88, 27);
             txtStreetNumber.TabIndex = 62;
+            txtStreetNumber.KeyPress += OnNumericTextBoxKeyPress;
             // 
             // lblCity
             // 

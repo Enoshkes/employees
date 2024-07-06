@@ -25,5 +25,7 @@ namespace Employees.Service
 
         void InitiateEmployees();
 
+        int GenerateId();
+
     }
 }
