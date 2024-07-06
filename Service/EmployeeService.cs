@@ -38,10 +38,17 @@ namespace Employees.Service
 
         public void Delete(int id)
         {
-            Employee? employee = Get(id);
-            if (employee != null)
+            int index = -1;
+            for (int i = 0; i < _employees.Count; i++)
             {
-                _employees.Remove(employee);
+                if (_employees[i].Id == id)
+                {
+                    index = i;
+                }
+            }
+            if (index != -1)
+            {
+            _employees.RemoveAt(index);
             }
         }
 
@@ -113,28 +120,7 @@ namespace Employees.Service
 
         public void InitiateEmployees()
         {
-            List<Employee> employees = ReadFromJsonFile();
-            if (employees.Count != 0)
-            {
-                _employees = employees;
-            }
-            else
-            {
-                List<Employee> newList = [
-                    new Employee(1, "333432", "Enosh", "Tsur", null, "0525864932", Gender.Male, FamilyStatus.Married, new DateOnly(1990,3, 24),
-                        new Address("Rishon", "Rambam", 46)
-                    ),
-                    new Employee(2, "333433", "Elly", "Rotman", null, "0523861930", Gender.Male, FamilyStatus.Single, new DateOnly(1997, 5, 1),
-                        new Address("Rishon", "Givati", 22)
-                    ),
-                    new Employee(3, "333433", "Rachel", "Levi", "036498865", "0527884812", Gender.Female, FamilyStatus.Divorced, new DateOnly(2000, 7, 12),
-                        new Address("Tel Aviv", "Aliya", 15)
-                    )
-                ];
-
-                _employees = newList;
-                WriteToJsonFile();
-            }
+            _employees = ReadFromJsonFile();
         }
 
         public int GenerateId()

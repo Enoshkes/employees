@@ -309,6 +309,7 @@
             btDelete.TabIndex = 71;
             btDelete.Text = "מחיקה";
             btDelete.UseVisualStyleBackColor = true;
+            btDelete.Click += DeleteEmployee;
             // 
             // btnUpdate
             // 
@@ -318,6 +319,7 @@
             btnUpdate.TabIndex = 70;
             btnUpdate.Text = "עדכון";
             btnUpdate.UseVisualStyleBackColor = true;
+            btnUpdate.Click += UpdateEmployee;
             // 
             // btAddWorker
             // 

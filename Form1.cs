@@ -17,10 +17,11 @@ namespace Employees
             _formState = FormState.Read;
             _employeeService = new EmployeeService();
             _employeeService.InitiateEmployees();
-            UpdateCurrentEmployeeTextBoxes();
+            btForward.Enabled = _employeeService.GetAll().Count > 1;
+            BindCurrentEmployee();
         }
 
-        private void UpdateCurrentEmployeeTextBoxes()
+        private void BindCurrentEmployee()
         {
             var employeesList = _employeeService.GetAll();
             if (employeesList.Count > 0) 
@@ -59,10 +60,15 @@ namespace Employees
                     }
                 }
             }
+            else
+            {
+                _formState = FormState.New;
+                ClearForm();
+            }
         }
 
 
-        private void SetNavigationButtonsEnabled()
+        private void EnableNavigatinoButtons()
         {
             var employeesList = _employeeService.GetAll();
             btBack.Enabled = _activeIndex > 0;
@@ -75,9 +81,9 @@ namespace Employees
             if (_activeIndex < employeesList.Count - 1)
             {
                 ++_activeIndex;
-                UpdateCurrentEmployeeTextBoxes();
+                BindCurrentEmployee();
             }
-            SetNavigationButtonsEnabled();
+            EnableNavigatinoButtons();
         }
 
         private void PrevClick(object sender, EventArgs e)
@@ -85,14 +91,13 @@ namespace Employees
             if (_activeIndex > 0)
             {
                 --_activeIndex;
-                UpdateCurrentEmployeeTextBoxes();
+                BindCurrentEmployee();
             }
-            SetNavigationButtonsEnabled();
+            EnableNavigatinoButtons();
         }
 
-        private void NewEmployee(object sender, EventArgs e)
+        private void ClearForm()
         {
-            _formState = FormState.New;
             List<TextBox> formTextBoxes = [
                 txtCode, txtId, txtFirstName, txtLastName,
                 txtAge, txtCellphone, txtTelephone,
@@ -108,34 +113,34 @@ namespace Employees
             rdbSingle.Checked = true;
         }
 
-        private void SaveEmployee(object sender, EventArgs e)
+        private void NewEmployee(object sender, EventArgs e)
         {
-            if (_formState != FormState.New)
-            {
-                MessageBox.Show("Please hit the new button before trying to save");
-                return;
-            }
-            
+            _formState = FormState.New;
+            ClearForm();
+        }
+
+        private Employee? GenerateEmployeeViaTextBoxes()
+        {
             List<TextBox> formTextBoxes = [
-                txtId, txtFirstName, txtLastName,
+                           txtId, txtFirstName, txtLastName,
                 txtCellphone, txtStreet, txtCity, txtStreetNumber,
             ];
 
             if (!FormUtils.IsAllTextBoxAreValid(formTextBoxes))
             {
-                MessageBox.Show("This form is invalid. all fields must be filled out");
-                return;
+                return null;
             }
 
             var success = DateOnly.TryParse(dtpDateOfBirth.Text, out DateOnly dob);
             if (!success)
             {
-                MessageBox.Show("Invalid date format");
-                return;
+                return null;
             }
 
             string familyStatusText = string.Empty;
+
             List<RadioButton> radioButtons = [rdbSingle, rdbMarride, rdbDivorce, rdbWidowed];
+            
             foreach (RadioButton status in radioButtons)
             {
                 if (status.Checked)
@@ -144,27 +149,64 @@ namespace Employees
                 }
             }
 
-            Employee newEmployee = new Employee(
-            _employeeService.GenerateId(),
-            txtId.Text,
-            txtFirstName.Text,
-            txtLastName.Text,
-            txtTelephone.Text,
-            txtCellphone.Text,
-            rdbMale.Checked ? Gender.Male : Gender.Female,
-            FormUtils.MapFamilyStatusByText(familyStatusText),
-            dob,
-            new Address(txtCity.Text, txtStreet.Text, int.Parse(txtStreetNumber.Text))
+            return new Employee(
+                _formState == FormState.New ? _employeeService.GenerateId() : int.Parse(txtCode.Text),
+                txtId.Text,
+                txtFirstName.Text,
+                txtLastName.Text,
+                txtTelephone.Text,
+                txtCellphone.Text,
+                rdbMale.Checked ? Gender.Male : Gender.Female,
+                FormUtils.MapFamilyStatusByText(familyStatusText),
+                dob,
+                new Address(txtCity.Text, txtStreet.Text, int.Parse(txtStreetNumber.Text))
             );
+        }
 
+
+        private void SaveEmployee(object sender, EventArgs e)
+        {
+            if (_formState != FormState.New)
+            {
+                MessageBox.Show("Please hit the new button before trying to save");
+                return;
+            }
+
+            Employee? newEmployee = GenerateEmployeeViaTextBoxes();
+            if (newEmployee == null)
+            {
+                MessageBox.Show("This form is invalid. all fields must be filled out");
+                return;
+            }
 
             var employeesList = _employeeService.GetAll();
             _employeeService.Add(newEmployee);
             _activeIndex = employeesList.Count - 1;
-            UpdateCurrentEmployeeTextBoxes();
-            SetNavigationButtonsEnabled();
+            BindCurrentEmployee();
+            EnableNavigatinoButtons();
             _employeeService.WriteToJsonFile();
             _formState = FormState.Read;
+        }
+
+        void UpdateEmployee(object sender, EventArgs e)
+        {
+            Employee? updatedEmployee = GenerateEmployeeViaTextBoxes();
+            if (updatedEmployee == null)
+            {
+                MessageBox.Show("This form is invalid. all fields must be filled out");
+                return;
+            }
+            _employeeService.Update(updatedEmployee);
+            _employeeService.WriteToJsonFile();
+        }
+
+        void DeleteEmployee(object sender, EventArgs e)
+        {
+            _employeeService.Delete(int.Parse(txtCode.Text));
+            _activeIndex = _activeIndex == 0 ? 0 : _activeIndex - 1;
+            _employeeService.WriteToJsonFile();
+            BindCurrentEmployee();
+            EnableNavigatinoButtons();
         }
 
         private void OnNumericTextBoxKeyPress(object sender, KeyPressEventArgs e)
